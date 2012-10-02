@@ -19,5 +19,9 @@
     "game"
   ],
   "author": "Max Thayer",
-  "license": "MIT"
+  "license": "MIT",
+  "engines" : {
+    "node": "0.8.x",
+    "npm": "1.1.x"
+  }
 }
