@@ -1,10 +1,10 @@
-title: Todo Game
+title: "Todo Game"
 todo:
-  title: What needs to be done?
-  mark_all: Mark all as complete.
+  title: "What needs to be done?"
+  mark_all: "Mark all as complete."
 help:
-  edit: Double-click to edit a todo.
+  edit: "Double-click to edit a todo."
 author:
-  name: Max Thayer
-  url: http://www.maxthayer.org
-credit: Shamelessly built on code from TodoMVC
+  name: "Max Thayer"
+  url: "http://www.maxthayer.org"
+credit: "Shamelessly built on code from TodoMVC"

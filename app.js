@@ -8,18 +8,16 @@ var express = require('express')
   , routes = require('./routes')
   , http = require('http')
   , path = require('path')
-  , YAML = require('libyaml');
+  , YAML = require('js-yaml');
 
 // HELPERS
 
 // gets text from localization files
 var localeMiddleware = function (req, res, next) {
-  var locale = req.query.lang || "en";
-  YAML.readFile("./locales/"+locale+".yml", function(error, documents) {
-    if (error) {console.error(error);}
-    res.locals.i18n = documents[0];
-    next();
-  });
+  var locale = req.query.lang || "en"
+    , i18n = require("./locales/"+locale+".yml");
+  res.locals.i18n = i18n;
+  next();
 };
 
 // CONFIG
