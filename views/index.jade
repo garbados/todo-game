@@ -1,0 +1,67 @@
+extends layout
+
+block content
+  section#todoapp.container
+    header#header
+        h1= i18n.title
+      section#main
+        table#todo-list
+          tr
+            th
+              input#toggle-all(type='checkbox')
+              label(for='toggle-all')= i18n.todo.mark_all
+            th
+              input#new-todo(placeholder='#{i18n.todo.title}', autofocus='autofocus')
+              label(for'new-todo') Task
+            th Priority
+              input#todo-priority(type="number", min="0", max="10")
+              label(for'todo-priority') Priority
+            th Due Date
+              input#todo-due-date(type="date")
+              label(for'todo-due-date') Due Date
+            th Destroy
+      footer#footer
+    #info
+      p= i18n.help.edit
+      p= i18n.credit
+    script#item-template(type='text/template').
+      // toggle
+      <td>
+        <input class="toggle" type="checkbox" <%= done ? 'checked' : '' %>>
+      </td>
+      // title
+      <td>
+        <input class="edit" value="<%- title %>">
+        <label><%- title %></label>
+      </td>
+      // priority
+      <td>
+        <input class="edit" type="number", min="0", max="10", value="<%- priority %>">
+        <label><%- priority %></label>
+      </td>
+      // due date
+      <td>
+        <input class="edit" type="date" value="<%- due_date %>">
+        <label><%- due_date %></label>
+      </td>
+      // destroy
+      <td>
+        <button class="destroy"></button>
+      </td>
+      
+    script#stats-template(type='text/template').
+      <span id="todo-count"><strong><%= remaining %></strong> <%= remaining === 1 ? 'item' : 'items' %> left</span>
+      <ul id="filters">
+          <li>
+              <a class="selected" href="#/">All</a>
+          </li>
+          <li>
+              <a href="#/active">Active</a>
+          </li>
+          <li>
+              <a href="#/completed">Completed</a>
+          </li>
+      </ul>
+      <% if (done) { %>
+      <button id="clear-completed">Clear completed (<%= done %>)</button>
+      <% } %>
