@@ -12,13 +12,13 @@ block content
               label(for='toggle-all')= i18n.todo.mark_all
             th
               input#new-todo(placeholder='#{i18n.todo.title}', autofocus='autofocus')
-              label(for'new-todo') Task
-            th Priority
+              label(for'new-todo')= i18n.todo.task
+            th
               input#todo-priority(type="number", min="0", max="10")
-              label(for'todo-priority') Priority
-            th Due Date
+              label(for'todo-priority')= i18n.todo.priority
+            th
               input#todo-due-date(type="date")
-              label(for'todo-due-date') Due Date
+              label(for'todo-due-date')= i18n.todo.due_date
             th Destroy
       footer#footer
     #info
@@ -30,17 +30,17 @@ block content
         <input class="toggle" type="checkbox" <%= done ? 'checked' : '' %>>
       </td>
       // title
-      <td>
+      <td class="task">
         <input class="edit" value="<%- title %>">
-        <label><%- title %></label>
+        <label class="view"><%- title %></label>
       </td>
       // priority
-      <td>
+      <td class="priority">
         <input class="edit" type="number", min="0", max="10", value="<%- priority %>">
         <label><%- priority %></label>
       </td>
       // due date
-      <td>
+      <td class="due-date">
         <input class="edit" type="date" value="<%- due_date %>">
         <label><%- due_date %></label>
       </td>

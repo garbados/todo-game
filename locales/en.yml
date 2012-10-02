@@ -2,6 +2,10 @@ title: "Todo Game"
 todo:
   title: "What needs to be done?"
   mark_all: "Mark all as complete."
+  task: "Task"
+  priority: "Priority"
+  due_date: "Due Date"
+  destroy: "Destroy"
 help:
   edit: "Double-click to edit a todo."
 author:

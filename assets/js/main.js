@@ -64,7 +64,7 @@ $(function(){
 
 // Todos are sorted by the days until their due date, if they have one, or their priority, if they don't.
     comparator: function(todo) {
-      var due_date = todo.get('due_date');
+      var due_date = new Date(todo.get('due_date'));
       if (due_date) {
       	var now = new Date();
       	return Math.round((due_date - now)/1000/60/60/24);
@@ -93,7 +93,7 @@ $(function(){
     events: {
       "click .toggle"   : "toggleDone",
       "dblclick .view"  : "edit",
-      "click a.destroy" : "clear",
+      "click button.destroy" : "clear",
       "keypress .edit"  : "updateOnEnter",
       "blur .edit"      : "close"
     },
@@ -109,6 +109,9 @@ $(function(){
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.toggleClass('done', this.model.get('done'));
       this.input = this.$('.edit');
+      this.input_task = this.$('.task > .edit');
+      this.input_priority = this.$('.priority > .edit');
+      this.input_date = this.$('.due-date > .edit');
       return this;
     },
 
@@ -118,16 +121,21 @@ $(function(){
     },
 
 // Switch this view into "editing" mode, displaying the input field.
-    edit: function() {
+    edit: function(event) {
+      var ev_class = $(event.target).parent().attr('class');
       this.$el.addClass("editing");
-      this.input.focus();
+      this.$("." + ev_class + " input").focus();
     },
 
 // Close the "editing" mode, saving changes to the todo.
     close: function() {
-      var value = this.input.val();
-      if (!value) this.clear();
-      this.model.save({title: value});
+      var new_task = this.input_task.val();
+      if (!new_task) this.clear();
+      this.model.save({
+      	title: new_task,
+      	priority: this.input_priority.val(),
+      	due_date: this.input_date.val()
+      });
       this.$el.removeClass("editing");
     },
 
@@ -168,7 +176,7 @@ $(function(){
 
       this.input = this.$("#new-todo");
       this.priority = this.$("#todo-priority");
-      this.due_date = this.$("todo-due-date");
+      this.due_date = this.$("#todo-due-date");
       this.allCheckbox = this.$("#toggle-all")[0];
 
       Todos.bind('add', this.addOne, this);
