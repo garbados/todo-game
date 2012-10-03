@@ -146,7 +146,7 @@ $(function(){
     edit: function(event) {
       var ev_class = $(event.target).parent().attr('class');
       this.$el.addClass("editing");
-      this.$("." + ev_class + " input").focus();
+      this.$("." + ev_class.split(' ').join('.') + " input").focus();
     },
 
 // Close the "editing" mode, saving changes to the todo.

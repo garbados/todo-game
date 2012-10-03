@@ -10,8 +10,7 @@ ul {
 	list-style-type: none;
 }
 label {
-	height: 28px;
-	padding-bottom: 5px;
+	height: 34px;
 }
 .editing .view {
 	display: none;
