@@ -2,66 +2,60 @@ extends layout
 
 block content
   section#todoapp.container
-    header#header
+    header#header.pull-center
         h1= i18n.title
-      section#main
-        table#todo-list
-          tr
-            th
-              input#toggle-all(type='checkbox')
-              label(for='toggle-all')= i18n.todo.mark_all
-            th
-              input#new-todo(placeholder='#{i18n.todo.title}', autofocus='autofocus')
-              label(for'new-todo')= i18n.todo.task
-            th
-              input#todo-priority(type="number", min="0", max="10")
-              label(for'todo-priority')= i18n.todo.priority
-            th
-              input#todo-due-date(type="date")
-              label(for'todo-due-date')= i18n.todo.due_date
-            th Destroy
-      footer#footer
-    #info
+        p= i18n.description
+    section#main
+      ul#todo-list
+        li.row
+          div.span1
+            //- button#check-all(class="btn btn-success") ✓ all
+            //- button#uncheck-all.hidden(class="btn btn-danger") un✓
+            //- label(for='toggle-all')= i18n.todo.mark_all
+          div.span6
+            input#new-todo(type="text", class="span6", placeholder='#{i18n.todo.title}', autofocus='autofocus')
+          div.span2
+            input#todo-priority(type="number", class="span2", min="0", max="10", placeholder="#{i18n.todo.priority}")
+          div.span2
+            input#todo-due-date(type="date", class="span2", placeholder="#{i18n.todo.due_date}")
+    footer#footer.row
+    #info.pull-center
       p= i18n.help.edit
       p= i18n.credit
     script#item-template(type='text/template').
-      // toggle
-      <td>
-        <input class="toggle" type="checkbox" <%= done ? 'checked' : '' %>>
-      </td>
-      // title
-      <td class="task">
-        <input class="edit" value="<%- title %>">
-        <label class="view"><%- title %></label>
-      </td>
-      // priority
-      <td class="priority">
-        <input class="edit" type="number", min="0", max="10", value="<%- priority %>">
-        <label><%- priority %></label>
-      </td>
-      // due date
-      <td class="due-date">
-        <input class="edit" type="date" value="<%- due_date %>">
-        <label><%- due_date %></label>
-      </td>
-      // destroy
-      <td>
-        <button class="destroy"></button>
-      </td>
+      <div class="span1">
+        <% if (done) { %>
+        <button class="btn btn-success toggle">✓</button>
+        <% } else { %>
+        <button class="btn btn-info toggle">✓</button>
+        <% } %>
+      </div>
+      <div class="task span6">
+        <input class="edit span6" type="text" value="<%- title %>">
+        <label class="view span6"><%- title %></label>
+      </div>
+      <div class="priority span2">
+        <input class="edit span2" type="number", min="0", max="10", value="<%- priority %>">
+        <label class="view span2"><%- priority %></label>
+      </div>
+      <div class="due-date span2">
+        <input class="edit span2" type="date" value="<%- due_date %>">
+        <label class="view span2"><%- due_date %></label>
+      </div>
+      <!--<div>
+        <button class="btn btn-danger destroy">X</button>
+      </div>-->
       
     script#stats-template(type='text/template').
-      <span id="todo-count"><strong><%= remaining %></strong> <%= remaining === 1 ? 'item' : 'items' %> left</span>
-      <ul id="filters">
-          <li>
-              <a class="selected" href="#/">All</a>
+      <span id="todo-count" class="span2"><strong><%= remaining %></strong> <%= remaining === 1 ? 'item' : 'items' %> left</span>
+      <ul id="filters" class="offset2 span4" style="text-align:center;">
+          <li class="span1">
+              <a class="selected" href="#/">Active</a>
           </li>
-          <li>
-              <a href="#/active">Active</a>
+          <li class="span1">
+              <a href="#/all">All</a>
           </li>
-          <li>
+          <li class="span1">
               <a href="#/completed">Completed</a>
           </li>
       </ul>
-      <% if (done) { %>
-      <button id="clear-completed">Clear completed (<%= done %>)</button>
-      <% } %>

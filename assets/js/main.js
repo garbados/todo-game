@@ -1,3 +1,5 @@
+var app = app || {};
+
 $(function(){
 
 // Todo Model
@@ -11,7 +13,8 @@ $(function(){
         title: "empty todo...",
         priority: 5,
         due_date: null,
-        done: false
+        done: false,
+        done_date: null
       };
     },
 
@@ -63,8 +66,9 @@ $(function(){
     },
 
 // Todos are sorted by the days until their due date, if they have one, or their priority, if they don't.
+// TODO: Only sorts on refresh and when adding items. Editing items does not reposition them. Fix this.
     comparator: function(todo) {
-      var due_date = new Date(todo.get('due_date'));
+      var due_date = todo.get('due_date') && new Date(todo.get('due_date'));
       if (due_date) {
       	var now = new Date();
       	return Math.round((due_date - now)/1000/60/60/24);
@@ -74,9 +78,11 @@ $(function(){
     }
 
   });
+  TodoList.prototype.completed = TodoList.prototype.done;
 
 // Create our global collection of Todos.
   var Todos = new TodoList;
+  app.Todos = Todos;
 
 // Todo Item View
 
@@ -84,7 +90,8 @@ $(function(){
   var TodoView = Backbone.View.extend({
 
 // ... is a list tag.
-    tagName:  "tr",
+    tagName:  "li",
+    className: "row",
 
 // Cache the template function for a single item.
     template: _.template($('#item-template').html()),
@@ -98,10 +105,13 @@ $(function(){
       "blur .edit"      : "close"
     },
 
-// The TodoView listens for changes to its model, re-rendering. Since there's a one-to-one correspondence between a Todo and a TodoView in this app, we set a direct reference on the model for convenience.
+    // The TodoView listens for changes to its model, re-rendering. Since there's
+    // a one-to-one correspondence between a **Todo** and a **TodoView** in this
+    // app, we set a direct reference on the model for convenience.
     initialize: function() {
-      this.model.bind('change', this.render, this);
-      this.model.bind('destroy', this.remove, this);
+      this.model.on( 'change', this.render, this );
+      this.model.on( 'destroy', this.remove, this );
+      this.model.on( 'visible', this.toggleVisible, this);
     },
 
 // Re-render the titles of the todo item.
@@ -118,6 +128,18 @@ $(function(){
 // Toggle the "done" state of the model.
     toggleDone: function() {
       this.model.toggle();
+    },
+
+    toggleVisible : function () {
+      this.$el.toggleClass( 'hidden',  this.isHidden());
+    },
+
+    isHidden : function () {
+      var isCompleted = this.model.get('done');
+      return ( // hidden cases only
+        (!isCompleted && app.TodoFilter === 'completed')
+        || (isCompleted && app.TodoFilter === 'active')
+      );
     },
 
 // Switch this view into "editing" mode, displaying the input field.
@@ -168,7 +190,8 @@ $(function(){
       "keypress #todo-priority":  "createOnEnter",
       "keypress #todo-due-date":  "createOnEnter",
       "click #clear-completed": "clearCompleted",
-      "click #toggle-all": "toggleAllComplete"
+      "click #check-all": "checkAllComplete",
+      "click #uncheck-all": "uncheckAllComplete"
     },
 
 // At initialization we bind to the relevant events on the Todos collection, when items are added or changed. Kick things off by loading any preexisting todos that might be saved in localStorage.
@@ -182,6 +205,8 @@ $(function(){
       Todos.bind('add', this.addOne, this);
       Todos.bind('reset', this.addAll, this);
       Todos.bind('all', this.render, this);
+      Todos.bind('change:completed', this.filterOne, this);
+      Todos.bind("filter", this.filterAll, this);
 
       this.footer = this.$('footer');
       this.main = $('#main');
@@ -194,23 +219,20 @@ $(function(){
       var done = Todos.done().length;
       var remaining = Todos.remaining().length;
 
-      // if (Todos.length) {
-        this.main.show();
+      this.main.show();
+      if (Todos.length) {
         this.footer.show();
         this.footer.html(this.statsTemplate({done: done, remaining: remaining}));
-      // } else {
-      //   this.main.hide();
-      //   this.footer.hide();
-      // }
-
-      this.allCheckbox.checked = !remaining;
+      } else {
+        this.footer.hide();
+      }
     },
 
 // Add a single todo item to the list by creating a view for it, and appending its element to the <ul>.
     addOne: function(todo) {
       var view = new TodoView({model: todo});
       var index = Todos.indexOf(todo);
-      var selector = this.$("#todo-list tr:eq(" + index.toString() + ")")
+      var selector = this.$("#todo-list li:eq(" + index.toString() + ")")
       if (selector) {
       	selector.after(view.render().el);
       } else {
@@ -223,6 +245,14 @@ $(function(){
       Todos.each(this.addOne);
     },
 
+    filterOne : function (todo) {
+      todo.trigger("visible");
+    },
+
+    filterAll : function () {
+      app.Todos.each(this.filterOne, this);
+    },
+
 // If you hit return in the main input field, create new Todo model, persisting it to localStorage.
     createOnEnter: function(e) {
       if (e.keyCode != 13) return;
@@ -231,9 +261,11 @@ $(function(){
       Todos.create({
       	title: this.input.val(),
       	due_date: this.due_date.val(),
-      	priority: this.priority.val()
+      	priority: this.due_date.val() ? null : this.priority.val() || Todo.prototype.defaults().priority
       });
       this.input.val('');
+      this.due_date.val('');
+      this.priority.val('');
     },
 
 // Clear all done todo items, destroying their models.
@@ -242,14 +274,43 @@ $(function(){
       return false;
     },
 
-    toggleAllComplete: function () {
-      var done = this.allCheckbox.checked;
-      Todos.each(function (todo) { todo.save({'done': done}); });
+    checkAllComplete: function () {
+      Todos.each(function (todo) { todo.save({'done': true, 'done_date': new Date()}); });
+      $('#uncheck-all').toggleClass('hidden');
+      $('#check-all').toggleClass('hidden');
+    },
+
+    uncheckAllComplete: function () {
+      Todos.each(function (todo) { todo.save({'done': false, 'done_date': null}); });
+      $('#uncheck-all').toggleClass('hidden');
+      $('#check-all').toggleClass('hidden');
     }
 
   });
 
 // Finally, we kick things off by creating the App.
   var App = new AppView;
+  app.App = App;
+
+  var Workspace = Backbone.Router.extend({
+    routes: {
+      '*filter': 'setFilter'
+    },
+
+    setFilter: function(param) {
+      param = param.trim() || '';
+      if (param === ""){
+        param = "active";
+      }
+      if (param === "all") {
+        param = "";
+      }
+      window.app.TodoFilter = param;
+      window.app.Todos.trigger('filter');
+    }
+  });
+
+  var TodoRouter = new Workspace();
+  Backbone.history.start();
 
 });

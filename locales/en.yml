@@ -1,4 +1,5 @@
 title: "Todo Game"
+description: "An attempt to gamify getting stuff done."
 todo:
   title: "What needs to be done?"
   mark_all: "Mark all as complete."
