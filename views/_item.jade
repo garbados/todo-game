@@ -1,0 +1,18 @@
+script#item-template(type='text/template')
+  .span1
+    | <% if (done) { %>
+    button.btn.btn-success.toggle ✓
+    | <% } else { %>
+    button.btn.btn-info.toggle ✓
+    | <% } %>
+  .task.span7
+    label.view.span7 <%- title %>
+    input.edit.span7(type="text", value!="<%- title %>")
+  .priority.span1
+    label.view.span1 <%- priority %>
+    input.edit.span1(type="number", min="0", max="10", value!="<%- priority %>")
+  .due-date.span2
+    label.view.span2 <%- due_date %>
+    input.edit.span2(type="date", value!="<%- due_date %>")
+  .destroy
+    button.btn.btn-danger.destroy X

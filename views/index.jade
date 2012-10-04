@@ -5,57 +5,25 @@ block content
     header#header.pull-center
         h1= i18n.title
         p= i18n.description
+    nav
+      ul#nav.nav.nav-tabs
+        li.active
+          a(href="#/") Active
+        li
+          a(href="#/all") All
+        li
+          a(href="#/completed") Completed
+        li.pull-right
+          a(href="#/feedback") Feedback
     section#main
-      ul#todo-list
-        li.row
-          div.span1
-            //- button#check-all(class="btn btn-success") ✓ all
-            //- button#uncheck-all.hidden(class="btn btn-danger") un✓
-            //- label(for='toggle-all')= i18n.todo.mark_all
-          div.span6
-            input#new-todo(type="text", class="span6", placeholder='#{i18n.todo.title}', autofocus='autofocus')
-          div.span2
-            input#todo-priority(type="number", class="span2", min="0", max="10", placeholder="#{i18n.todo.priority}")
-          div.span2
-            input#todo-due-date(type="date", class="span2", placeholder="#{i18n.todo.due_date}")
+      include _todolist
+      ul#items
+    section#feedback.hidden
     footer#footer.row
     #info.pull-center
       p= i18n.help.edit
       p= i18n.credit
-    script#item-template(type='text/template').
-      <div class="span1">
-        <% if (done) { %>
-        <button class="btn btn-success toggle">✓</button>
-        <% } else { %>
-        <button class="btn btn-info toggle">✓</button>
-        <% } %>
-      </div>
-      <div class="task span6">
-        <input class="edit span6" type="text" value="<%- title %>">
-        <label class="view span6"><%- title %></label>
-      </div>
-      <div class="priority span2">
-        <input class="edit span2" type="number", min="0", max="10", value="<%- priority %>">
-        <label class="view span2"><%- priority %></label>
-      </div>
-      <div class="due-date span2">
-        <input class="edit span2" type="date" value="<%- due_date %>">
-        <label class="view span2"><%- due_date %></label>
-      </div>
-      <!--<div>
-        <button class="btn btn-danger destroy">X</button>
-      </div>-->
-      
-    script#stats-template(type='text/template').
-      <span id="todo-count" class="span2"><strong><%= remaining %></strong> <%= remaining === 1 ? 'item' : 'items' %> left</span>
-      <ul id="filters" class="offset2 span4" style="text-align:center;">
-          <li class="span1">
-              <a class="selected" href="#/">Active</a>
-          </li>
-          <li class="span1">
-              <a href="#/all">All</a>
-          </li>
-          <li class="span1">
-              <a href="#/completed">Completed</a>
-          </li>
-      </ul>
+    //- templates
+    include _item
+    include _stats
+    include _feedback

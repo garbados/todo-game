@@ -292,12 +292,46 @@ $(function(){
   var App = new AppView;
   app.App = App;
 
+  // FEEDBACK VIEW
+  var FeedbackView = Backbone.View.extend({
+    el: $('#feedback'),
+    template: _.template($('#feedback-template').html()),
+    initialize: function() {
+      this.render();
+    },
+    render: function() {
+      var completed_todos = app.Todos.filter(function(todo) {return todo.get('done_date')});
+      this.$el.html(this.template({'completed_todos':completed_todos}));
+    }
+  });
+  var Feedback = new FeedbackView();
+  app.Feedback = Feedback;
+
+  // ROUTER
   var Workspace = Backbone.Router.extend({
     routes: {
+      'feedback' : 'showFeedback',
       '*filter': 'setFilter'
     },
 
+    showFeedback: function() {
+      var hidden = 'hidden'
+        , list_el = $('#main')
+        , feedback_el = $('#feedback');
+      if (!list_el.hasClass(hidden)) {
+        list_el.addClass(hidden);
+        feedback_el.removeClass(hidden);
+      }
+    },
+
     setFilter: function(param) {
+      var hidden = 'hidden'
+        , list_el = $('#main')
+        , feedback_el = $('#feedback');
+      if (list_el.hasClass(hidden)) {
+        list_el.removeClass(hidden);
+        feedback_el.addClass(hidden);
+      }
       param = param.trim() || '';
       if (param === ""){
         param = "active";

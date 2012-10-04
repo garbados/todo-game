@@ -4,7 +4,7 @@ todo:
   title: "What needs to be done?"
   mark_all: "Mark all as complete."
   task: "Task"
-  priority: "Priority"
+  priority: "#"
   due_date: "Due Date"
   destroy: "Destroy"
 help:

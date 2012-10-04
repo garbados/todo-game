@@ -1,0 +1,9 @@
+ul#todo-list
+  li.row
+    .span1
+    .span7
+      input#new-todo(type="text", class="span7", placeholder='#{i18n.todo.title}', autofocus='autofocus')
+    .span1
+      input#todo-priority(type="number", class="span1", min="0", max="10", placeholder="#{i18n.todo.priority}")
+    .span2
+      input#todo-due-date(type="date", class="span2", placeholder="#{i18n.todo.due_date}")
