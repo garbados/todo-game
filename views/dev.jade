@@ -1,0 +1,47 @@
+extends layout
+
+block content
+  <a href="https://github.com/garbados/todo-game"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+  header#header
+    h1 Todo Game
+    p An attempt to gamify getting stuff done.
+  nav#nav
+  section#todo-list
+    #new-todo
+      .span1
+      .task.span7
+        label.view.span7 <%- title %>
+        input.edit.span7(type="text", value!="<%- title %>")
+      .priority.span1
+        label.view.span1 <%- priority %>
+        input.edit.span1(type="number", min="0", max="10", value!="<%- priority %>")
+      .due-date.span2
+        label.view.span2 <%- due_date %>
+        input.edit.span2(type="date", value!="<%- due_date %>")
+    #todos
+  section#feedback
+  footer#footer
+  //- templates
+  script#item-template(type='text/template')
+    li.row
+      .span1
+        | <% if (done) { %>
+        button.btn.btn-success.toggle ✓
+        | <% } else { %>
+        button.btn.btn-info.toggle ✓
+        | <% } %>
+      .task.span7
+        label.view.span7 <%- title %>
+        input.edit.span7(type="text", value!="<%- title %>")
+      .priority.span1
+        label.view.span1 <%- priority %>
+        input.edit.span1(type="number", min="0", max="10", value!="<%- priority %>")
+      .due-date.span2
+        label.view.span2 <%- due_date %>
+        input.edit.span2(type="date", value!="<%- due_date %>")
+      .destroy
+        button.btn.btn-danger X
+  script#feedback-template(type='text/template')
+
+block scripts
+  script(src='js/dev.js')

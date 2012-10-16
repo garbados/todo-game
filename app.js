@@ -46,6 +46,7 @@ app.configure('development', function(){
 // ROUTES
 
 app.get('/', routes.index);
+app.get('/dev', routes.dev);
 
 // START
 
