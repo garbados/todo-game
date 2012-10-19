@@ -18,15 +18,41 @@ block content
     section#main
       include _todolist
       ul#items
-    section#feedback.hidden
+    section#feedback
     footer#footer.row
     #info.pull-center
       p= i18n.help.edit
       p= i18n.credit
-    //- templates
-    include _item
-    include _stats
-    include _feedback
 
-block scripts
-  script(src='js/main.js')
+append templates
+  script#item-template(type='text/template')
+    .span1
+      | <% if (done) { %>
+      button.btn.btn-success.toggle ✓
+      | <% } else { %>
+      button.btn.btn-info.toggle ✓
+      | <% } %>
+    .task.span7
+      label.view.span7 <%- title %>
+      input.edit.span7(type="text", value!="<%- title %>")
+    .priority.span1
+      label.view.span1 <%- priority %>
+      input.edit.span1(type="number", min="0", max="10", value!="<%- priority %>")
+    .due-date.span2
+      label.view.span2 <%- due_date %>
+      input.edit.span2(type="date", value!="<%- due_date %>")
+    .destroy
+      button.btn.btn-danger.destroy X
+  
+  script#stats-template(type='text/template')
+    span#todo-count.span2
+      strong <%= remaining %> <%= remaining === 1 ? 'item' : 'items' %> left
+
+  script#feedback-template(type='text/template')
+    h1 Hello!
+    // display the moving average over the last five days
+    // good days are those that improved on the moving average
+    // bad ones are those that didn't
+
+append scripts
+  script(src='js/dev.js')

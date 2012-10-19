@@ -4,10 +4,10 @@ $(function(){
 
 // Todo Model
 
-// Our basic Todo model has title, order, and done attributes.
+  // Our basic Todo model has title, order, and done attributes.
   var Todo = Backbone.Model.extend({
 
-// Default attributes for the todo item.
+    // Default attributes for the todo item.
     defaults: function() {
       return {
         title: "empty todo...",
@@ -18,14 +18,14 @@ $(function(){
       };
     },
 
-// Ensure that each todo created has title.
+    // Ensure that each todo created has title.
     initialize: function() {
       if (!this.get("title")) {
         this.set({"title": this.defaults.title});
       }
     },
 
-// Toggle the done state of this todo item.
+    // Toggle the done state of this todo item.
     toggle: function() {
       var completed_on = null;
       if (!this.get("done")) {
@@ -37,7 +37,7 @@ $(function(){
       });
     },
 
-// Remove this Todo from localStorage and delete its view.
+    // Remove this Todo from localStorage and delete its view.
     clear: function() {
       this.destroy();
     }
@@ -49,24 +49,24 @@ $(function(){
 // The collection of todos is backed by localStorage instead of a remote server.
   var TodoList = Backbone.Collection.extend({
 
-// Reference to this collection's model.
+    // Reference to this collection's model.
     model: Todo,
 
-// Save all of the todo items under the "todos" namespace.
+    // Save all of the todo items under the "todos" namespace.
     localStorage: new Store("todos-backbone"),
 
-// Filter down the list of all todo items that are finished.
+    // Filter down the list of all todo items that are finished.
     done: function() {
       return this.filter(function(todo){ return todo.get('done'); });
     },
 
-// Filter down the list to only todo items that are still not finished.
+    // Filter down the list to only todo items that are still not finished.
     remaining: function() {
       return this.without.apply(this, this.done());
     },
 
-// Todos are sorted by the days until their due date, if they have one, or their priority, if they don't.
-// TODO: Only sorts on refresh and when adding items. Editing items does not reposition them. Fix this.
+    // Todos are sorted by the days until their due date, if they have one, or their priority, if they don't.
+    // TODO: Only sorts on refresh and when adding items. Editing items does not reposition them. Fix this.
     comparator: function(todo) {
       var due_date = todo.get('due_date') && new Date(todo.get('due_date'));
       if (due_date) {
